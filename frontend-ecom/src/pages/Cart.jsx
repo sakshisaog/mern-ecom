@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../api/axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 export default function Cart() {
   const userId = localStorage.getItem("userId");
@@ -69,7 +69,7 @@ export default function Cart() {
                     {item.productId.name}
                   </h2>
                   <p className="text-gray-600">
-                    ${item.productId.price.toFixed(2)}
+                    ₹{item.productId.price.toFixed(2)}
                   </p>
                 </div>
               </div>
@@ -94,7 +94,7 @@ export default function Cart() {
               </div>
               <div>
                 <p className="font-semibold">
-                  ${(item.productId.price * item.quantity).toFixed(2)}
+                  ₹{(item.productId.price * item.quantity).toFixed(2)}
                 </p>
               </div>
               <button
@@ -107,7 +107,7 @@ export default function Cart() {
           ))}
 
           <div className="text-right mt-4">
-            <h2 className="text-xl font-bold">Total: ${total.toFixed(2)}</h2>
+            <h2 className="text-xl font-bold">Total: ₹{total.toFixed(2)}</h2>
           </div>
           <button onClick={()=> navigate("/checkout-address")} className="w-full bg-blue-500 text-white p-2 rounded">
             Proceed to Checkout

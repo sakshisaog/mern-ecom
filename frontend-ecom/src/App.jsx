@@ -9,6 +9,10 @@ import EditProduct from "./admin/EditProduct";
 import Navbar from "./components/Navbar";
 import { Outlet } from "react-router-dom";
 import Cart from "./pages/Cart";
+import CheckoutAddress from "./pages/CheckoutAddress";
+import Checkout from "./pages/Checkout";
+import OrderSuccess from "./pages/OrderSuccess"
+
 
 function Layout() {
   return (
@@ -42,6 +46,18 @@ const router = createBrowserRouter([
       {
         path: "/cart",
         element: <Cart />,
+      },
+      {
+        path:"/checkout-address",
+        element:<CheckoutAddress/>
+      },
+       {
+        path:"/checkout",
+        element:<Checkout/>
+      },
+      {
+        path:"/order-success/:id",
+        element:<OrderSuccess/>
       },
       { path: "/admin/products", element: <ProductList /> },
       { path: "/admin/products/add", element: <AddProduct /> },

@@ -27,7 +27,7 @@ export default function Home() {
       return;
     }
 
-    console.log("Sending:", { userId, productId }); // DEBUG
+    console.log("Sending:", {userId, productId}); // DEBUG
 
     const res = await api.post(`/cart/add`, { userId, productId });
 

@@ -1,87 +1,81 @@
-import {useState} from 'react'
-import api from '../api/axios'
-import { useNavigate } from 'react-router';
 
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../api/axios";
 
 export default function Login() {
-    const [form, setForm] = useState({
-        email: '',
-        password: '',
+  const [form,setForm]=useState({
+    email:"",
+    password:""
+  })
+  const [msg,setMsg]=useState("");
+  const navigate=useNavigate();
+
+  const handleChange=(e)=>{
+    setForm({
+      ...form,
+      [e.target.name]:e.target.value
     });
-    
-    const navigate = useNavigate();
-    const [msg, setMsg] = useState("");
+  }
+  
+  const handleSubmit=async(e)=>{
+    e.preventDefault();
 
-    const handleChange = (e) => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value,
-        });
+    try{
+      const res = await api.post("/auth/login",form);
+      console.log(res,"data");
+      //Save Token to localStorage
+      localStorage.setItem("token",res.data.token);
+      localStorage.setItem("userId",res.data.user.id);
+
+      setMsg("Login Successful");
+      //Redirect to Home Page after 1 second
+      setTimeout(()=>{
+        navigate("/");
+      },1000);
+    } catch(err){
+      setMsg(err.response?.data?.message || "An error occurred" );
     }
+  }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault(); 
-        try {
-            const response = await api.post('/auth/login', form);
-            console.log(response, "Login response");
-            localStorage.setItem('token', response.data.token);
-            setMsg("Login successful");
-            setTimeout(() => {
-                setMsg("");
-            }, 1000); 
-            navigate('/'); 
-        }
-        catch(err){
-          console.log(err);
+  return(
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
+      <div  className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm">
+        <h2 className="text-2xl font-bold mb-6 text-center">Login to Your Account</h2>
 
-           setMsg(err.response?.data?.message || "An error occurred");
-        }
-    }
+        {msg && (
+          <div className="mb-4 text-center text-sm text-red-600 font-medium">
+            {msg}
+          </div>
+        )}
 
-    return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            <div className="w-full max-w-md p-8 space-y-6 bg-white rounded shadow">
-                <h2 className="text-2xl font-bold text-center">Login to your account</h2>       
-                {msg && (
-                  <div className="text-red-500 text-center mb-4">
-                    {msg}
-                  </div>
-                )}
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-                        <input
-                            type="email"  
-                            placeholder="Enter your email"
-                            name="email"
-                            id="email"
-                            value={form.email}
-                            onChange={handleChange}
-                            required    
-                            className="w-full px-3 py-2 mt-1 border rounded focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-                        <input
-                            type="password"
-                            placeholder="Enter your password"
-                            id="password"
-                            name="password"
-                            value={form.password}
-                            onChange={handleChange}
-                            required
-                            className="w-full px-3 py-2 mt-1 border rounded focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                    </div>
-                    <button
-                        type="submit"
-                        className="w-full px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700 focus:outline-none focus:ring focus:border-blue-300"
-                    >
-                        Login
-                    </button>
-                </form>
-            </div>
-        </div>
-    );
-} 
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            name='email'
+            type="email"
+            placeholder="Enter Email"
+            value={form.email}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+          <input
+            name='password'
+            type="password"
+            placeholder="Enter Password"
+            value={form.password}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
+          >
+            Login
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
